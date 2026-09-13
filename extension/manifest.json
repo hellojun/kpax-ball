@@ -1,0 +1,63 @@
+{
+  "manifest_version": 3,
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAkwkSkXwccUkpOJqGCQVG37sW+cm8CDx0arbVGqueKGC+KmhoCGPqj08RCsc4CiCh0/kNezKIq9j587NcWQ6f8K0Cp3zbZcTGk6qyIfXGJLH7MgUWRihAc6+gTfnRqOYaV2/EE13OL+Xch8oXV78SELVXlf+HV/h9SylPyNK6EHPWDuiACvyt8USKGogcodqXujDnaHghYkzs5XTo0l4SWMVhtlQKzybVhhWHBy6vrPF+xx4oI9E55/ZlV2qFnC9xHBZvqjr570KrnLLbYUYRKmDdAuNPwiLaU6f5Lpn58wSZBRA5VtuaiTah6ZC8PHkD2Lo7FXl4P0hqkfoi6ZdJrwIDAQAB",
+  "name": "KPAX Ball (Dev)",
+  "version": "0.1.0",
+  "description": "AI-powered football analysis for Polymarket",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "activeTab",
+    "tabs",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://polymarket.com/*",
+    "https://gamma-api.polymarket.com/*",
+    "https://kpax.bout.network/*",
+    "https://*.privy.io/*"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://kpax.bout.network/*",
+      "http://localhost/*"
+    ]
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://polymarket.com/event/*",
+        "https://polymarket.com/sports/*",
+        "https://polymarket.com/*/event/*",
+        "https://polymarket.com/*/sports/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["page-bridge.js"],
+      "matches": ["https://polymarket.com/*"]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_title": "KPAX Ball"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

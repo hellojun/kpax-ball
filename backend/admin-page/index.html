@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KPAX Ball — Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js" integrity="sha256-yYfngbEKv4RENfGDvNUqJTqGFcKf31NJEe9OTnnMH3Y=" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --bg: #0b1120;
+    --panel: #0f172a;
+    --panel-hi: #1e293b;
+    --border: #1f2a44;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --accent: #22d3ee;
+    --accent2: #34d399;
+    --warn: #fbbf24;
+    --danger: #f87171;
+    --ok: #34d399;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--accent); text-decoration: none; }
+  button { font: inherit; cursor: pointer; border: 1px solid var(--border);
+    background: var(--panel-hi); color: var(--text); padding: 6px 12px; border-radius: 6px; }
+  button:hover { border-color: var(--accent); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button.primary { background: linear-gradient(90deg, #10b981, #06b6d4);
+    border-color: transparent; font-weight: 600; }
+  button.danger { background: #7f1d1d; border-color: #b91c1c; color: #fee2e2; font-weight: 600; }
+  button.danger:hover { background: #991b1b; }
+  input, textarea { font: inherit; background: var(--panel); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; }
+  textarea { font-family: ui-monospace, SF Mono, Menlo, monospace; font-size: 12px; }
+  header { padding: 12px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    background: var(--panel); }
+  header .brand { font-weight: 700; background: linear-gradient(90deg, #34d399, #22d3ee);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; color: transparent; }
+  main { padding: 20px; max-width: 1400px; margin: 0 auto; }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 8px;
+    overflow: hidden; }
+  th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
+    vertical-align: top; }
+  th { background: var(--panel-hi); color: var(--muted); font-weight: 600;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .04em; position: sticky; top: 0; }
+  tr:hover td { background: rgba(34, 211, 238, .05); }
+  td.mono { font-family: ui-monospace, SF Mono, Menlo, monospace; font-size: 11px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px;
+    font-weight: 600; border: 1px solid; }
+  .b-active { color: var(--ok); border-color: var(--ok); background: rgba(52,211,153,.08); }
+  .b-pending { color: var(--muted); border-color: var(--muted); background: rgba(148,163,184,.08); }
+  .b-withdrawing, .b-liquidating { color: var(--warn); border-color: var(--warn); background: rgba(251,191,36,.08); }
+  .b-repaid { color: #38bdf8; border-color: #38bdf8; background: rgba(56,189,248,.08); }
+  .b-liquidated_ltv, .b-liquidated_kickoff { color: var(--danger); border-color: var(--danger); background: rgba(248,113,113,.08); }
+  .b-failed, .b-closed { color: var(--muted); border-color: var(--muted); background: rgba(148,163,184,.08); }
+  .h-healthy { color: var(--ok); }
+  .h-caution { color: #38bdf8; }
+  .h-warn { color: var(--warn); }
+  .h-liquidate { color: var(--danger); font-weight: 600; }
+  .muted { color: var(--muted); }
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex;
+    align-items: flex-start; justify-content: center; padding: 40px 20px; z-index: 100;
+    overflow-y: auto; }
+  .modal { background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    max-width: 720px; width: 100%; padding: 20px; }
+  .modal h2 { margin: 0 0 12px; font-size: 16px; }
+  .kv { display: grid; grid-template-columns: 200px 1fr; gap: 4px 12px; font-size: 12px; }
+  .kv .k { color: var(--muted); }
+  .kv .v { word-break: break-all; }
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--panel-hi);
+    border: 1px solid var(--accent); padding: 12px 16px; border-radius: 8px; max-width: 360px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5); z-index: 200; }
+  .toast.error { border-color: var(--danger); }
+  .toast.ok { border-color: var(--ok); }
+  .login-card { max-width: 480px; margin: 80px auto; }
+  .login-card h1 { font-size: 18px; margin: 0 0 4px; }
+  .login-card p { color: var(--muted); font-size: 12px; margin: 0 0 16px; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 12px; }
+  details pre { background: var(--bg); padding: 8px; border-radius: 4px; max-height: 200px;
+    overflow: auto; font-size: 11px; }
+  .filter-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .filter-bar select, .filter-bar input { background: var(--panel); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font: inherit; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 20px; }
+  .clickable { cursor: pointer; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+"use strict";
+
+const API_BASE = ""; // same origin
+const TOKEN_KEY = "kpax_admin_token";
+const $ = (id) => document.getElementById(id);
+
+// All HTML written into the DOM goes through this. Defense-in-depth on top of
+// per-value escapeHtml() — admin sees data sourced from User/Loan tables which
+// could contain user-controlled strings (email, market slug, team names from
+// Polymarket Gamma, etc.).
+function setHtml(el, html) {
+  el.innerHTML = window.DOMPurify
+    ? window.DOMPurify.sanitize(html, { ADD_ATTR: ["target"] })
+    : html;
+}
+
+let state = {
+  token: localStorage.getItem(TOKEN_KEY) || "",
+  me: null,           // { username }
+  loans: [],
+  filter: { status: "" },
+  detail: null,        // { loan, alerts, events }
+  detailLoading: false,
+  liquidating: new Set(), // loan_ids currently being liquidated
+};
+
+// ---------- API ----------
+
+async function api(path, opts = {}) {
+  const headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
+  if (state.token) headers.Authorization = "Bearer " + state.token;
+  const r = await fetch(API_BASE + path, Object.assign({}, opts, { headers }));
+  const text = await r.text();
+  let body;
+  try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+  if (!r.ok) {
+    const msg = body && body.detail ? body.detail : (typeof body === "string" ? body : r.statusText);
+    const err = new Error(msg || "Request failed");
+    err.status = r.status;
+    throw err;
+  }
+  return body;
+}
+
+async function apiLogin(username, password) {
+  return api("/api/admin/login", {
+    method: "POST",
+    body: JSON.stringify({ username, password }),
+  });
+}
+async function apiMe() { return api("/api/admin/me"); }
+async function apiLoans(status) {
+  const qs = status ? `?status=${encodeURIComponent(status)}` : "";
+  return api("/api/admin/loans" + qs);
+}
+async function apiLoanDetail(id) { return api(`/api/admin/loans/${id}`); }
+async function apiLiquidate(id) {
+  return api(`/api/admin/loans/${id}/liquidate`, { method: "POST" });
+}
+
+// ---------- toasts ----------
+
+function toast(msg, kind) {
+  const el = document.createElement("div");
+  el.className = "toast " + (kind || "");
+  el.textContent = msg; // user-controlled error strings — never innerHTML
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 4500);
+}
+
+// ---------- formatters ----------
+
+function escapeHtml(s) {
+  if (s == null) return "";
+  return String(s).replace(/[&<>"']/g, (c) => (
+    { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]
+  ));
+}
+const fmtUsd = (x) => x == null ? "—" : "$" + Number(x).toFixed(2);
+const fmtPct = (x) => x == null ? "—" : (Number(x) * 100).toFixed(1) + "%";
+const fmtPrice = (x) => x == null ? "—" : Number(x).toFixed(4);
+const fmtTime = (iso) => {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  return d.toLocaleString("zh-CN", { hour12: false });
+};
+const shortAddr = (a) => !a ? "—" : a.length < 14 ? a : a.slice(0, 6) + "…" + a.slice(-4);
+const shortTx = (h) => !h ? "—" : h.slice(0, 10) + "…";
+
+function statusBadge(s) {
+  const safe = escapeHtml(s);
+  return `<span class="badge b-${safe}">${safe}</span>`;
+}
+
+function healthSpan(h) {
+  if (!h) return '<span class="muted">—</span>';
+  const safe = escapeHtml(h);
+  return `<span class="h-${safe}">${safe}</span>`;
+}
+
+function polyscanLink(h) {
+  if (!h) return "—";
+  const safe = encodeURIComponent(h);
+  return `<a href="https://polygonscan.com/tx/${safe}" target="_blank" rel="noopener noreferrer">${escapeHtml(shortTx(h))}</a>`;
+}
+
+// ---------- views ----------
+
+function render() {
+  const root = $("app");
+  if (!state.token) return renderLogin(root);
+  if (!state.me) return renderBootstrap(root);
+  renderDashboard(root);
+}
+
+function renderLogin(root) {
+  setHtml(root, `
+    <header><span class="brand">KPAX Ball — Admin</span></header>
+    <main>
+      <div class="login-card panel">
+        <h1>登录</h1>
+        <p>请输入管理员账号。</p>
+        <form id="login-form">
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <input id="login-username" placeholder="用户名" autocomplete="username" autofocus>
+            <input id="login-password" type="password" placeholder="密码" autocomplete="current-password">
+            <button class="primary" type="submit">登录</button>
+          </div>
+        </form>
+        <p style="margin-top:16px"><span class="muted">账号在后端环境变量 <code>KPAX_ADMIN_USERNAME</code> / <code>KPAX_ADMIN_PASSWORD</code> 配置。</span></p>
+      </div>
+    </main>
+  `);
+  $("login-form").onsubmit = async (e) => {
+    e.preventDefault();
+    const u = $("login-username").value.trim();
+    const p = $("login-password").value;
+    if (!u || !p) { toast("请输入用户名和密码", "error"); return; }
+    try {
+      const resp = await apiLogin(u, p);
+      state.token = resp.token;
+      localStorage.setItem(TOKEN_KEY, resp.token);
+      await loadMe();
+    } catch (err) {
+      toast("登录失败：" + err.message, "error");
+    }
+  };
+}
+
+function renderBootstrap(root) {
+  setHtml(root, `
+    <header><span class="brand">KPAX Ball — Admin</span></header>
+    <main><div class="panel"><p class="muted">加载中…</p></div></main>
+  `);
+}
+
+function renderDashboard(root) {
+  setHtml(root, `
+    <header>
+      <span class="brand">KPAX Ball — Admin</span>
+      <div class="row">
+        <span class="muted" style="font-size:12px">${escapeHtml(state.me.username || "")}</span>
+        <button id="logout">退出</button>
+      </div>
+    </header>
+    <main>
+      <div class="filter-bar">
+        <label class="muted">状态：</label>
+        <select id="filter-status">
+          <option value="">全部</option>
+          <option value="active">active</option>
+          <option value="pending">pending</option>
+          <option value="withdrawing">withdrawing</option>
+          <option value="liquidating">liquidating</option>
+          <option value="repaid">repaid</option>
+          <option value="liquidated_ltv">liquidated_ltv</option>
+          <option value="liquidated_kickoff">liquidated_kickoff</option>
+          <option value="failed">failed</option>
+          <option value="closed">closed</option>
+        </select>
+        <button id="refresh">刷新</button>
+        <span class="muted" id="count"></span>
+      </div>
+      <div id="table-wrap"></div>
+    </main>
+    <div id="modal-mount"></div>
+  `);
+  $("logout").onclick = () => {
+    state.token = "";
+    state.me = null;
+    localStorage.removeItem(TOKEN_KEY);
+    render();
+  };
+  const sel = $("filter-status");
+  sel.value = state.filter.status;
+  sel.onchange = async () => {
+    state.filter.status = sel.value;
+    await loadLoans();
+    renderTable();
+  };
+  $("refresh").onclick = async () => {
+    await loadLoans();
+    renderTable();
+  };
+  renderTable();
+}
+
+function renderTable() {
+  const w = $("table-wrap");
+  if (!w) return;
+  $("count").textContent = `${state.loans.length} 条`;
+  if (state.loans.length === 0) {
+    setHtml(w, `<div class="panel empty">没有匹配的借贷记录</div>`);
+    return;
+  }
+  const rows = state.loans.map(loanRow).join("");
+  setHtml(w, `
+    <div class="panel" style="padding:0">
+      <table>
+        <thead><tr>
+          <th>ID</th><th>状态</th><th>用户</th><th>市场</th>
+          <th class="num">本金</th><th class="num">抵押(开仓)</th>
+          <th class="num">现价</th><th class="num">现 LTV</th><th>健康</th>
+          <th>开仓时间</th><th>开赛</th>
+          <th>操作</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `);
+  for (const r of state.loans) {
+    const tr = document.querySelector(`tr[data-loan="${r.loan_id}"]`);
+    if (!tr) continue;
+    tr.querySelectorAll(".open-detail").forEach((td) => {
+      td.onclick = () => openDetail(r.loan_id);
+    });
+    const liq = tr.querySelector(".do-liquidate");
+    if (liq) liq.onclick = (e) => { e.stopPropagation(); confirmLiquidate(r); };
+  }
+}
+
+function loanRow(r) {
+  const liquidatable = r.status === "active" && r.onchain_loan_id != null;
+  const inFlight = state.liquidating.has(r.loan_id);
+  const teams = (r.home_team || "") + (r.away_team ? " vs " + r.away_team : "");
+  return `
+    <tr data-loan="${r.loan_id}" class="clickable">
+      <td class="open-detail">#${r.loan_id}<br><span class="muted" style="font-size:10px">on-chain ${r.onchain_loan_id ?? "—"}</span></td>
+      <td class="open-detail">${statusBadge(r.status)}</td>
+      <td class="open-detail mono">${escapeHtml(shortAddr(r.user_wallet))}<br><span class="muted">${escapeHtml(r.user_email || "")}</span></td>
+      <td class="open-detail">${escapeHtml(teams || r.market_slug)}<br><span class="muted" style="font-size:10px">${escapeHtml(r.competition || "")} · L${r.league_tier}</span></td>
+      <td class="open-detail num">${fmtUsd(r.principal)}</td>
+      <td class="open-detail num">${fmtUsd(r.collateral_value_at_open)}<br><span class="muted" style="font-size:10px">${escapeHtml(String(r.collateral_shares))} shares</span></td>
+      <td class="open-detail num">${fmtPrice(r.current_price)}</td>
+      <td class="open-detail num">${fmtPct(r.current_ltv)}<br><span class="muted" style="font-size:10px">开仓 ${fmtPct(r.opened_ltv)}</span></td>
+      <td class="open-detail">${healthSpan(r.health)}</td>
+      <td class="open-detail" style="font-size:11px">${escapeHtml(fmtTime(r.opened_at))}</td>
+      <td class="open-detail" style="font-size:11px">${escapeHtml(fmtTime(r.match_kickoff_at))}</td>
+      <td>
+        ${liquidatable
+          ? `<button class="danger do-liquidate" ${inFlight ? "disabled" : ""}>${inFlight ? "处理中…" : "清算"}</button>`
+          : `<span class="muted">—</span>`}
+      </td>
+    </tr>
+  `;
+}
+
+// ---------- detail modal ----------
+
+async function openDetail(loanId) {
+  state.detailLoading = true;
+  showModalLoading(loanId);
+  try {
+    state.detail = await apiLoanDetail(loanId);
+    renderDetail();
+  } catch (e) {
+    closeModal();
+    toast("加载详情失败：" + e.message, "error");
+  } finally {
+    state.detailLoading = false;
+  }
+}
+
+function showModalLoading(loanId) {
+  setHtml($("modal-mount"), `
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <h2>Loan #${escapeHtml(String(loanId))}</h2>
+        <p class="muted">加载中…</p>
+      </div>
+    </div>
+  `);
+  $("modal-overlay").onclick = (e) => { if (e.target.id === "modal-overlay") closeModal(); };
+}
+
+function renderDetail() {
+  if (!state.detail) return;
+  const d = state.detail;
+  const r = d.loan;
+  const kvRows = [
+    ["DB Loan ID", `#${escapeHtml(String(r.loan_id))}`],
+    ["On-chain ID", escapeHtml(String(r.onchain_loan_id ?? "—"))],
+    ["状态", statusBadge(r.status)],
+    ["用户", `<span class="mono">${escapeHtml(r.user_wallet)}</span>` + (r.user_email ? ` · ${escapeHtml(r.user_email)}` : "")],
+    ["市场", escapeHtml(r.market_slug)],
+    ["对阵", escapeHtml((r.home_team || "—") + " vs " + (r.away_team || "—"))],
+    ["联赛 / 等级", `${escapeHtml(r.competition || "—")} · L${escapeHtml(String(r.league_tier))}`],
+    ["CTF tokenId", `<span class="mono">${escapeHtml(r.ctf_token_id)}</span>`],
+    ["抵押 shares", escapeHtml(String(r.collateral_shares))],
+    ["开仓时抵押估值", fmtUsd(r.collateral_value_at_open)],
+    ["本金", fmtUsd(r.principal)],
+    ["APR", `${(r.apr_bps / 100).toFixed(2)}%`],
+    ["开仓 LTV", fmtPct(r.opened_ltv)],
+    ["开仓时间", escapeHtml(fmtTime(r.opened_at))],
+    ["开赛时间", escapeHtml(fmtTime(r.match_kickoff_at))],
+    ["关闭时间", escapeHtml(fmtTime(r.closed_at))],
+    ["开仓 tx", polyscanLink(r.open_tx_hash)],
+    ["关闭 tx", polyscanLink(r.close_tx_hash)],
+    ["现价", fmtPrice(r.current_price)],
+    ["现抵押估值", fmtUsd(r.current_collateral_value_usd)],
+    ["现欠款", fmtUsd(r.current_debt_usd)],
+    ["现 LTV / 健康", fmtPct(r.current_ltv) + " · " + healthSpan(r.health)],
+    ["已付利息", fmtUsd(r.total_interest_paid)],
+    ["清算罚金", fmtUsd(r.liquidation_penalty)],
+    ["返还用户", fmtUsd(r.residual_to_user)],
+  ];
+  const liquidatable = r.status === "active" && r.onchain_loan_id != null;
+  const inFlight = state.liquidating.has(r.loan_id);
+
+  const alertsHtml = d.alerts.length === 0
+    ? `<p class="muted" style="font-size:12px">无</p>`
+    : `<ul style="font-size:12px; padding-left:18px">${d.alerts.map((a) =>
+        `<li>${escapeHtml(a.alert_type)} · 发出 ${escapeHtml(fmtTime(a.sent_at))}` +
+        (a.delivered_at ? ` · 已下发 ${escapeHtml(fmtTime(a.delivered_at))}` : " · 未下发") +
+        `</li>`
+      ).join("")}</ul>`;
+
+  const eventsHtml = d.events.length === 0
+    ? `<p class="muted" style="font-size:12px">无</p>`
+    : `<ul style="font-size:12px; padding-left:18px">${d.events.map((e) =>
+        `<li>${escapeHtml(e.event_type)} · block ${escapeHtml(String(e.block_number))} · ${polyscanLink(e.tx_hash)}<br>` +
+        `<details><summary>data</summary><pre>${escapeHtml(JSON.stringify(e.data, null, 2))}</pre></details>` +
+        `</li>`
+      ).join("")}</ul>`;
+
+  setHtml($("modal-mount"), `
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal">
+        <div class="row" style="justify-content: space-between;">
+          <h2>Loan #${escapeHtml(String(r.loan_id))} — ${statusBadge(r.status)}</h2>
+          <button id="close-modal">关闭</button>
+        </div>
+        <div class="kv" style="margin-top:12px">
+          ${kvRows.map(([k, v]) => `<div class="k">${escapeHtml(k)}</div><div class="v">${v}</div>`).join("")}
+        </div>
+        <h3 style="margin-top:20px; font-size:13px">告警 (${d.alerts.length})</h3>
+        ${alertsHtml}
+        <h3 style="margin-top:16px; font-size:13px">链上事件 (${d.events.length})</h3>
+        ${eventsHtml}
+        <div class="row" style="margin-top:20px; justify-content: flex-end;">
+          ${liquidatable
+            ? `<button class="danger" id="modal-liquidate" ${inFlight ? "disabled" : ""}>${inFlight ? "清算处理中…" : "手动清算"}</button>`
+            : ""}
+        </div>
+      </div>
+    </div>
+  `);
+  $("modal-overlay").onclick = (e) => { if (e.target.id === "modal-overlay") closeModal(); };
+  $("close-modal").onclick = closeModal;
+  const liq = $("modal-liquidate");
+  if (liq) liq.onclick = () => confirmLiquidate(r);
+}
+
+function closeModal() {
+  state.detail = null;
+  setHtml($("modal-mount"), "");
+}
+
+// ---------- liquidate ----------
+
+function confirmLiquidate(r) {
+  const teams = (r.home_team || "") + (r.away_team ? " vs " + r.away_team : "");
+  const msg =
+    "⚠️ 确认手动清算？此操作不可逆。\n\n" +
+    `Loan #${r.loan_id} · 用户 ${shortAddr(r.user_wallet)}\n` +
+    `${teams || r.market_slug}\n` +
+    `本金 ${fmtUsd(r.principal)} · 现价 ${fmtPrice(r.current_price)} · 现 LTV ${fmtPct(r.current_ltv)}\n\n` +
+    "将执行 keeper 4 步流程：链上 withdraw → Polymarket 卖出 CTF → USDC 回 vault → settleLiquidation。";
+  if (!window.confirm(msg)) return;
+  doLiquidate(r.loan_id);
+}
+
+async function doLiquidate(loanId) {
+  state.liquidating.add(loanId);
+  renderTable();
+  if (state.detail && state.detail.loan.loan_id === loanId) renderDetail();
+  try {
+    const resp = await apiLiquidate(loanId);
+    toast(`已触发 Loan #${loanId} 清算流程（价格 ${resp.triggered_with_price}）。30 秒后刷新查看状态。`, "ok");
+    setTimeout(async () => {
+      try {
+        await loadLoans();
+        renderTable();
+        if (state.detail && state.detail.loan.loan_id === loanId) {
+          state.detail = await apiLoanDetail(loanId);
+          renderDetail();
+        }
+      } catch {}
+    }, 8000);
+  } catch (e) {
+    toast("清算失败：" + e.message, "error");
+  } finally {
+    state.liquidating.delete(loanId);
+    renderTable();
+    if (state.detail && state.detail.loan.loan_id === loanId) renderDetail();
+  }
+}
+
+// ---------- bootstrap ----------
+
+async function loadMe() {
+  state.me = null;
+  render();
+  try {
+    state.me = await apiMe();
+    await loadLoans();
+    render();
+  } catch (e) {
+    if (e.status === 401 || e.status === 403) {
+      localStorage.removeItem(TOKEN_KEY);
+      state.token = "";
+      state.me = null;
+      toast("会话失效，请重新登录", "error");
+      render();
+      return;
+    }
+    toast("加载失败：" + e.message, "error");
+  }
+}
+
+async function loadLoans() {
+  const data = await apiLoans(state.filter.status);
+  state.loans = data.loans || [];
+}
+
+if (state.token) loadMe();
+else render();
+</script>
+</body>
+</html>

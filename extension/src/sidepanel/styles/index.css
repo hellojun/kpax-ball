@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* ===== 暗色主题（默认） ===== */
+body,
+[data-theme="dark"] {
+  background: #020617; /* slate-950 */
+  color: #e2e8f0; /* slate-200 */
+  color-scheme: dark;
+}
+
+/* ===== 亮色主题 ===== */
+/* 翻转 Tailwind 的 slate 调色板：暗色 slot → 亮色值 */
+[data-theme="light"] {
+  color-scheme: light;
+  background: #ffffff;
+  color: #1e293b;
+
+  /* 重映射 Tailwind v4 颜色变量 */
+  --color-slate-950: #ffffff;    /* 最深背景 → 白色 */
+  --color-slate-900: #f8fafc;    /* 卡片背景 → slate-50 */
+  --color-slate-800: #f1f5f9;    /* 次级背景 → slate-100 */
+  --color-slate-700: #e2e8f0;    /* 边框    → slate-200 */
+  --color-slate-600: #94a3b8;    /* 淡文本  → slate-400 */
+  --color-slate-500: #64748b;    /* 更淡    → slate-500 */
+  --color-slate-400: #475569;    /* 次文本  → slate-600 */
+  --color-slate-300: #334155;    /* 主文本  → slate-700 */
+  --color-slate-200: #1e293b;    /* 强文本  → slate-800 */
+  --color-slate-100: #0f172a;    /* 更强    → slate-900 */
+  --color-slate-50:  #020617;    /* 最深文字 → slate-950 */
+  --color-white: #0f172a;        /* 白色文字 → 深色文字 */
+
+  /* 蓝色在亮色下稍微调深 */
+  --color-blue-500: #2563eb;
+  --color-blue-600: #1d4ed8;
+  --color-blue-400: #2563eb;
+  /* 浅色蓝（原本做 dark mode 亮文字）→ 深蓝 */
+  --color-blue-300: #1d4ed8;
+  --color-blue-200: #1e40af;
+  --color-blue-100: #1e3a8a;
+
+  /* 状态色在亮色下提高对比度 */
+  --color-green-400: #16a34a;
+  --color-green-300: #15803d;
+  --color-green-200: #166534;
+
+  --color-yellow-400: #ca8a04;
+  --color-yellow-300: #a16207;
+  --color-yellow-200: #854d0e;
+  --color-yellow-100: #713f12;
+
+  --color-red-400: #dc2626;
+  --color-red-300: #b91c1c;
+  --color-red-200: #991b1b;
+
+  --color-amber-400: #d97706;
+  --color-amber-300: #b45309;
+  --color-amber-200: #92400e;
+}
+
+/* 亮色模式下半透明背景需要调整 */
+[data-theme="light"] .bg-slate-800\/60 {
+  background-color: rgba(241, 245, 249, 0.8) !important;
+}
+
+[data-theme="light"] .bg-slate-800\/50 {
+  background-color: rgba(241, 245, 249, 0.7) !important;
+}
+
+[data-theme="light"] .bg-slate-700\/50 {
+  background-color: rgba(226, 232, 240, 0.6) !important;
+}
+
+[data-theme="light"] .bg-slate-900\/50 {
+  background-color: rgba(248, 250, 252, 0.7) !important;
+}
+
+/* 亮色模式下，蓝色/彩色背景上的文字保持白色 */
+[data-theme="light"] .bg-blue-600 .text-white,
+[data-theme="light"] .bg-blue-600,
+[data-theme="light"] .bg-blue-500 {
+  --color-white: #ffffff;
+}
+
+/* 蓝色边框按钮文字保持蓝色 */
+[data-theme="light"] .border-blue-600 {
+  --color-blue-400: #2563eb;
+}
+
+/* 顶部栏品牌色保持蓝色 */
+[data-theme="light"] .text-blue-500 {
+  color: #2563eb !important;
+}

@@ -1,0 +1,61 @@
+{
+  "manifest_version": 3,
+  "name": "KPAX Ball",
+  "version": "0.1.0",
+  "description": "AI-powered football analysis for Polymarket",
+  "permissions": [
+    "sidePanel",
+    "storage",
+    "activeTab",
+    "tabs",
+    "alarms",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://polymarket.com/*",
+    "https://gamma-api.polymarket.com/*",
+    "https://kpax.bout.network/*",
+    "https://*.privy.io/*"
+  ],
+  "externally_connectable": {
+    "matches": [
+      "https://kpax.bout.network/*"
+    ]
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://polymarket.com/event/*",
+        "https://polymarket.com/sports/*",
+        "https://polymarket.com/*/event/*",
+        "https://polymarket.com/*/sports/*"
+      ],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["page-bridge.js"],
+      "matches": ["https://polymarket.com/*"]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_title": "KPAX Ball"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

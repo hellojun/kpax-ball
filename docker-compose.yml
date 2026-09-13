@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: kpax_ball
+      POSTGRES_USER: kpax
+      POSTGRES_PASSWORD: kpax_dev
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kpax"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://kpax:kpax_dev@db:5432/kpax_ball
+    env_file:
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Lending worker — runs the same image as `backend` but enters via
+  # `app.worker` instead of `app.main`. Keep this single-instance: the
+  # worker grabs a Postgres advisory lock at startup, and a second
+  # process will exit immediately. See plan v0.2 §2.
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: python -m app.worker
+    environment:
+      DATABASE_URL: postgresql://kpax:kpax_dev@db:5432/kpax_ball
+    env_file:
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

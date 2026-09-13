@@ -1,0 +1,25 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+test = "test"
+script = "script"
+solc = "0.8.24"
+optimizer = true
+optimizer_runs = 200
+# V2 settleLiquidation hits "stack too deep" with the regular pipeline due to
+# the LP / treasury / residual / event emit local variable count. via-ir
+# routes through the Yul intermediate representation which sidesteps the
+# 16-slot stack limit. Slower compile, no runtime cost.
+via_ir = true
+remappings = [
+    "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+    "forge-std/=lib/forge-std/src/",
+]
+
+[rpc_endpoints]
+polygon = "${POLYGON_RPC_URL}"
+mumbai = "${MUMBAI_RPC_URL}"
+
+[etherscan]
+polygon = { key = "${POLYGONSCAN_KEY}" }

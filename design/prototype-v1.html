@@ -1,0 +1,1131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KPAX UX redesign — prototype v1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+      .panel { width: 400px; }
+      [data-screen] { display: none; }
+      [data-screen].active { display: grid; }
+      .tab-btn[data-active="true"] {
+        background: #1e293b; color: #fff;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-100 text-slate-800">
+    <!-- ============== TOP NAV ============== -->
+    <header class="border-b border-slate-200 bg-white sticky top-0 z-50">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
+        <div>
+          <div class="text-base font-bold">KPAX 借贷 UX 重设计 · v1</div>
+          <div class="text-xs text-slate-500">侧边栏改版方案 — 风险前置 · 步骤明示 · 入口下沉</div>
+        </div>
+        <nav class="ml-auto flex gap-1 text-sm flex-wrap justify-end">
+          <button data-tab="borrow" class="tab-btn rounded px-3 py-1.5 hover:bg-slate-100">1 · 借款流程</button>
+          <button data-tab="repay" class="tab-btn rounded px-3 py-1.5 hover:bg-slate-100">2 · 还款</button>
+          <button data-tab="assets" data-active="true" class="tab-btn rounded px-3 py-1.5 hover:bg-slate-100">3 · 资产页 ★</button>
+          <button data-tab="profile" class="tab-btn rounded px-3 py-1.5 hover:bg-slate-100">4 · Profile 主页</button>
+          <button data-tab="lending" class="tab-btn rounded px-3 py-1.5 hover:bg-slate-100">5 · 借款历史</button>
+          <button data-tab="compare" class="tab-btn rounded px-3 py-1.5 hover:bg-slate-100">📐 改动对照</button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- SCREEN 1 · BORROW FLOW -->
+    <!-- ============================================================ -->
+    <main data-screen="borrow" class="max-w-6xl mx-auto px-6 py-8 grid grid-cols-[400px_1fr] gap-10">
+      <!-- mockup -->
+      <div>
+        <div class="text-xs text-slate-500 mb-2">Side Panel · 400 × 720</div>
+        <div class="panel rounded-3xl border border-slate-300 bg-slate-950 text-slate-100 shadow-xl overflow-hidden">
+
+          <div class="flex items-center justify-between border-b border-slate-800 bg-slate-900/60 px-4 py-3">
+            <h3 class="text-base font-semibold">开始借款</h3>
+            <button class="text-slate-400 text-lg">✕</button>
+          </div>
+
+          <div class="p-4 space-y-4">
+            <!-- ① stepper -->
+            <div class="flex items-center gap-2 text-[11px]">
+              <div class="flex items-center gap-1.5">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500 text-[10px] font-bold text-white">✓</span>
+                <span class="text-emerald-300">授权 Vault</span>
+              </div>
+              <div class="flex-1 h-px bg-slate-700"></div>
+              <div class="flex items-center gap-1.5">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white">2</span>
+                <span class="text-blue-300 font-semibold">设定金额</span>
+              </div>
+              <div class="flex-1 h-px bg-slate-700"></div>
+              <div class="flex items-center gap-1.5">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full border border-slate-700 text-[10px] text-slate-500">3</span>
+                <span class="text-slate-500">确认借款</span>
+              </div>
+            </div>
+
+            <div class="rounded-lg border border-slate-800 bg-slate-800/40 p-3 text-xs space-y-1">
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500">持仓</span>
+                <span class="text-right truncate">Liverpool vs Man City — Yes</span>
+              </div>
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500">份额</span>
+                <span>50.00 (~$25.00)</span>
+              </div>
+              <div class="flex justify-between gap-2">
+                <span class="text-slate-500">可借上限</span>
+                <span class="font-semibold text-slate-100">$20.00</span>
+              </div>
+            </div>
+
+            <!-- ② risk panel -->
+            <div class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-3 text-xs space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-amber-200">⚠️  风险预览 (实时)</span>
+                <span class="text-[10px] text-slate-400">基于当前价 $0.50</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="rounded-lg bg-slate-900/60 p-2">
+                  <div class="text-[10px] text-slate-400">强平价</div>
+                  <div class="text-sm font-bold text-amber-300">$0.60</div>
+                </div>
+                <div class="rounded-lg bg-slate-900/60 p-2">
+                  <div class="text-[10px] text-slate-400">距离强平</div>
+                  <div class="text-sm font-bold text-emerald-300">+20%</div>
+                </div>
+                <div class="rounded-lg bg-slate-900/60 p-2">
+                  <div class="text-[10px] text-slate-400">风险评分</div>
+                  <div class="text-sm font-bold text-emerald-300">3 / 10</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/10 px-2.5 py-1.5">
+                <span class="text-base">💡</span>
+                <div class="flex-1 text-[11px] text-blue-200">
+                  AI 建议借 <span class="font-semibold text-blue-100">$5.00</span> (25% LTV)
+                </div>
+                <button class="rounded border border-blue-400/40 bg-blue-500/20 px-2 py-0.5 text-[10px] text-blue-200 hover:bg-blue-500/30">采用</button>
+              </div>
+            </div>
+
+            <!-- ③ amount slider -->
+            <div>
+              <div class="flex items-baseline justify-between mb-1.5">
+                <span class="text-xs text-slate-400">借款金额</span>
+                <span class="text-[10px] text-slate-500">最大 $20.00</span>
+              </div>
+              <div class="flex items-baseline gap-2 mb-2">
+                <span class="text-2xl font-bold text-slate-50">$5.00</span>
+                <span class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-300">LTV 25% · 安全</span>
+              </div>
+              <input type="range" min="0.5" max="20" step="0.01" value="5" class="w-full accent-blue-500" />
+              <div class="flex justify-between text-[9px] text-slate-500 px-0.5 mt-0.5">
+                <span>$0.50</span><span class="text-emerald-400">建议 $5</span><span class="text-amber-400">$15</span><span class="text-red-400">$20 强平</span>
+              </div>
+            </div>
+
+            <!-- ④ equation -->
+            <div class="rounded-xl bg-slate-800/60 p-3 text-xs space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-slate-400">你借出</span>
+                <span class="font-semibold text-slate-100">$5.00 USDC</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="text-slate-400">30 天后约还</span>
+                <span class="font-semibold text-slate-100">$5.05 <span class="text-slate-500 font-normal">(利息 $0.05)</span></span>
+              </div>
+              <div class="flex items-center justify-between border-t border-slate-700/60 pt-1.5 text-[11px]">
+                <span class="text-slate-500">年化 12% · 随时可提前还</span>
+                <a class="text-slate-400 hover:text-slate-200" href="#">明细 ›</a>
+              </div>
+            </div>
+
+            <!-- ⑤ CTA -->
+            <div>
+              <button class="w-full rounded-lg bg-blue-600 hover:bg-blue-500 px-3 py-3 text-sm font-semibold text-white transition-colors">
+                借出 $5.00 USDC
+              </button>
+              <div class="mt-1.5 text-center text-[11px] text-slate-500">
+                需要 1 次 MetaMask 确认 · 约 10 秒
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- annotations -->
+      <aside class="space-y-5 pt-7">
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">1</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">加 stepper：让用户随时知道走到哪一步</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版用纯文字描述当前阶段（&ldquo;👉 第 1 步：在 MetaMask 里签 typed-data...&rdquo;），眼睛要读完才知道位置。
+              stepper 用图标 + 颜色一秒定位，符合 Coinbase / Aave / OnRamper 的标准做法。
+              授权已完成时显示 ✓，避免用户重复授权或不知道授权过没。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">2</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">风险信息前置 + 三指标卡片</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版 RiskCard 默认折叠（&ldquo;查看理由 ▾&rdquo;），用户先看到滑块再看到风险评分，本末倒置。
+              改成 <b>强平价 / 距离强平 / 风险评分</b> 三块卡片永远可见，配合 amber 警示色 + 实时数字。
+              AI 建议从&ldquo;一段灰文字 + 小按钮&rdquo;升级为可一键采纳的蓝条。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">3</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">滑块下方 4 段刻度，颜色编码风险区间</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              滑块本身不带视觉提示，用户拖到 $18 不知道自己已经在强平边缘。
+              底下 $0.50 / $5 建议 / $15 警戒 / $20 强平 四个锚点用 emerald → amber → red 渐变，
+              一拉就知道&ldquo;再拉就危险&rdquo;。当前金额上方再附 LTV chip，强化反馈。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">4</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">把 APR + 日利息换成&ldquo;借/还&rdquo;等式</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版 grid 显示&ldquo;APR 12%&rdquo;和&ldquo;Daily interest $0.0016&rdquo;— 用户不会做心算。
+              改成 <b>&ldquo;借出 $5 → 30 天还 $5.05&rdquo;</b> 一目了然。APR 收到脚注。
+              这是 Aave、Compound、Morpho 的标准信息架构。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">5</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">主按钮文案聚焦动作，钱包细节降为辅助文</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版按钮&ldquo;授权 KPAX Vault（MetaMask 会弹两次：1 次签名 + 1 次广播）&rdquo;把实现细节灌给用户，让人害怕。
+              改成主文案只描述结果（&ldquo;借出 $5.00 USDC&rdquo;），下面一行小字温柔提示&ldquo;需 1 次 MetaMask 确认 · 约 10s&rdquo;。
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+
+    <!-- ============================================================ -->
+    <!-- SCREEN 2 · REPAY -->
+    <!-- ============================================================ -->
+    <main data-screen="repay" class="max-w-6xl mx-auto px-6 py-8 grid grid-cols-[400px_1fr] gap-10">
+      <div>
+        <div class="text-xs text-slate-500 mb-2">Side Panel · 400 × 600</div>
+        <div class="panel rounded-3xl border border-slate-300 bg-slate-950 text-slate-100 shadow-xl overflow-hidden">
+
+          <div class="flex items-center justify-between border-b border-slate-800 bg-slate-900/60 px-4 py-3">
+            <h3 class="text-base font-semibold">还款</h3>
+            <button class="text-slate-400 text-lg">✕</button>
+          </div>
+
+          <div class="p-4 space-y-4">
+            <div class="flex items-center gap-2 text-[11px]">
+              <div class="flex items-center gap-1.5">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white">1</span>
+                <span class="text-blue-300 font-semibold">USDC 授权</span>
+              </div>
+              <div class="flex-1 h-px bg-slate-700"></div>
+              <div class="flex items-center gap-1.5">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full border border-slate-700 text-[10px] text-slate-500">2</span>
+                <span class="text-slate-500">还款</span>
+              </div>
+              <div class="flex-1 h-px bg-slate-700"></div>
+              <div class="flex items-center gap-1.5">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full border border-slate-700 text-[10px] text-slate-500">✓</span>
+                <span class="text-slate-500">完成</span>
+              </div>
+            </div>
+
+            <div class="rounded-lg border border-slate-800 bg-slate-800/40 p-3 text-xs space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="font-medium text-slate-200 truncate">Liverpool vs Man City — Yes</span>
+                <span class="text-slate-500 text-[11px]">Loan #42</span>
+              </div>
+              <div class="text-[11px] text-slate-500">2026-04-22 开仓 · 6 天前</div>
+            </div>
+
+            <div class="rounded-xl border border-blue-500/20 bg-gradient-to-b from-blue-500/10 to-slate-900/0 p-5 text-center">
+              <div class="text-[11px] text-slate-400 mb-1">应还总额</div>
+              <div class="text-4xl font-bold text-slate-50 tabular-nums">$5.0532</div>
+              <div class="mt-2 text-[11px] text-slate-400">
+                本金 <span class="text-slate-200">$5.00</span>
+                <span class="text-slate-700"> · </span>
+                利息 <span class="text-slate-200">$0.0532</span>
+                <span class="text-slate-700"> · </span>
+                <span class="text-emerald-300">已持仓 6 天</span>
+              </div>
+            </div>
+
+            <div>
+              <button class="w-full rounded-lg bg-blue-600 hover:bg-blue-500 px-3 py-3 text-sm font-semibold text-white">
+                还款 $5.0532 USDC
+              </button>
+              <div class="mt-1.5 text-center text-[11px] text-slate-500">
+                需要 2 次 MetaMask 确认 · 约 20 秒
+                <span class="text-slate-600"> · </span>
+                <a class="hover:text-slate-400" href="#">为什么是 2 次？</a>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-2 rounded-lg bg-slate-800/40 p-3 text-[11px] text-slate-400">
+              <span>🔁</span>
+              <span>还款后，你抵押的 50.00 份 CTF 立即退回 Polymarket Safe，可继续交易。</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="space-y-5 pt-7">
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">1</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">把 stepper 也搬到还款流程</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版还款 modal 的&ldquo;USDC 授权 + repay&rdquo;两步只用文字提示，用户中途切走再回来根本不知道还差几步。
+              改用同一套 stepper 控件 — 全产品视觉一致 + 复用代码。
+              注意：如果 USDC 授权已充足，stepper 自动隐藏第 1 步。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">2</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">把&ldquo;应还总额&rdquo;做成视觉焦点</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版用 6 位小数的等宽小字，挤在 Row 里和本金/利息平起平坐。
+              这是借款产品最重要的数字 — 应该比其他都大。改成 4xl 字号，蓝色渐变背景 hero，下面才是拆解。
+              小数从 6 位降到 4 位（少 2 位 wei 噪音）。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">3</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">把&ldquo;为什么 2 次&rdquo;变成可点击说明</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              实现细节不该塞进按钮文案。改成主按钮聚焦动作，副文给个轻量入口让好奇的用户自查。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">4</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">加一条&ldquo;还完之后会发生什么&rdquo;</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版只在成功页才告知&ldquo;CTF 退回 Polymarket Safe&rdquo;，但用户决策的时候就该知道。
+              一行小字消除&ldquo;我的抵押会卡住吗&rdquo;的疑虑，是借贷产品的标准 reassurance pattern。
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+
+    <!-- ============================================================ -->
+    <!-- SCREEN 3 · ASSETS  (★ unified hub — borrow/repay all positions) -->
+    <!-- ============================================================ -->
+    <main data-screen="assets" class="active max-w-6xl mx-auto px-6 py-8 grid grid-cols-[400px_1fr] gap-10">
+      <div>
+        <div class="text-xs text-slate-500 mb-2">Side Panel · 400 × 1180</div>
+        <div class="panel rounded-3xl border border-slate-300 bg-slate-950 text-slate-100 shadow-xl overflow-hidden">
+
+          <div class="flex items-center justify-between border-b border-slate-800 bg-slate-950/95 px-4 py-2">
+            <button class="flex items-center gap-1 text-sm text-slate-400">‹ 返回</button>
+            <span class="text-sm font-semibold">我的资产</span>
+            <button class="text-slate-500 text-base">↻</button>
+          </div>
+
+          <div class="p-4 space-y-3">
+
+            <!-- ① overview triple-stat -->
+            <section>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+                  <div class="text-xl font-bold tabular-nums">5</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">总持仓</div>
+                </div>
+                <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+                  <div class="text-xl font-bold tabular-nums">$120.50</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">总价值</div>
+                </div>
+                <div class="rounded-xl border border-blue-500/30 bg-blue-500/5 p-3 text-center">
+                  <div class="text-xl font-bold text-blue-300 tabular-nums">2</div>
+                  <div class="text-[10px] text-blue-300/70 mt-0.5">借款中</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ② filter chips -->
+            <section>
+              <div class="flex flex-wrap gap-1.5 text-[11px]">
+                <button class="rounded-full bg-blue-600 text-white px-2.5 py-1 font-medium">全部 5</button>
+                <button class="rounded-full border border-slate-700 px-2.5 py-1 text-slate-300 hover:bg-slate-800">可借 1</button>
+                <button class="rounded-full border border-slate-700 px-2.5 py-1 text-slate-300 hover:bg-slate-800">借款中 2</button>
+                <button class="rounded-full border border-slate-700 px-2.5 py-1 text-slate-300 hover:bg-slate-800">不支持 2</button>
+              </div>
+            </section>
+
+            <!-- ③ Card · borrowed CAUTION (top of list — needs attention) -->
+            <div class="rounded-xl border border-amber-500/40 bg-amber-500/5 p-3.5 space-y-2.5">
+              <div class="flex items-start gap-2">
+                <span class="text-base">⚽</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-slate-100 truncate">Arsenal vs Chelsea</div>
+                  <div class="text-[11px] text-slate-500">选 Yes · 抵押中 · 价值 $24.00</div>
+                </div>
+                <span class="rounded-full border border-amber-500/40 bg-amber-500/10 px-1.5 py-0 text-[10px] text-amber-300 shrink-0">借款中</span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="rounded-lg bg-slate-900/60 px-2.5 py-1.5">
+                  <div class="text-[10px] text-slate-500">应还</div>
+                  <div class="font-semibold tabular-nums">$5.3701</div>
+                </div>
+                <div class="rounded-lg bg-slate-900/60 px-2.5 py-1.5">
+                  <div class="text-[10px] text-slate-500">LTV · 健康</div>
+                  <div class="font-semibold text-amber-300">68% · 临近警戒</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-emerald-500 via-amber-400 to-amber-500" style="width:75%"></div>
+                </div>
+                <div class="mt-0.5 flex justify-between text-[9px] text-slate-500">
+                  <span>0%</span><span class="text-amber-400">75% 警告</span><span class="text-red-400">90% 强平</span>
+                </div>
+              </div>
+
+              <div class="rounded-md bg-amber-500/10 border border-amber-500/30 px-2 py-1 text-[10px] text-amber-200">
+                ⚠️ 抵押价格再涨 $0.08 触发强平
+              </div>
+
+              <div class="grid grid-cols-[1fr_auto] gap-2">
+                <button class="rounded-lg bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">还款 $5.3701</button>
+                <button class="rounded-lg border border-slate-700 hover:bg-slate-800 px-3 py-2 text-xs text-slate-300">AI 分析 ›</button>
+              </div>
+            </div>
+
+            <!-- ③ Card · borrowed HEALTHY -->
+            <div class="rounded-xl border border-blue-500/25 bg-blue-500/5 p-3.5 space-y-2.5">
+              <div class="flex items-start gap-2">
+                <span class="text-base">⚽</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-slate-100 truncate">Liverpool vs Man City</div>
+                  <div class="text-[11px] text-slate-500">选 Yes · 抵押中 · 价值 $24.00</div>
+                </div>
+                <span class="rounded-full border border-blue-500/40 bg-blue-500/10 px-1.5 py-0 text-[10px] text-blue-300 shrink-0">借款中</span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="rounded-lg bg-slate-900/60 px-2.5 py-1.5">
+                  <div class="text-[10px] text-slate-500">应还</div>
+                  <div class="font-semibold tabular-nums">$5.0532</div>
+                </div>
+                <div class="rounded-lg bg-slate-900/60 px-2.5 py-1.5">
+                  <div class="text-[10px] text-slate-500">LTV · 健康</div>
+                  <div class="font-semibold text-emerald-300">25% · 健康</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-400" style="width:33%"></div>
+                </div>
+                <div class="mt-0.5 flex justify-between text-[9px] text-slate-500">
+                  <span>0%</span><span class="text-amber-400">75% 警告</span><span class="text-red-400">90% 强平</span>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-[1fr_auto] gap-2">
+                <button class="rounded-lg bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">还款 $5.0532</button>
+                <button class="rounded-lg border border-slate-700 hover:bg-slate-800 px-3 py-2 text-xs text-slate-300">AI 分析 ›</button>
+              </div>
+            </div>
+
+            <!-- ④ Card · borrow ELIGIBLE (no loan yet) -->
+            <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3.5 space-y-2.5">
+              <div class="flex items-start gap-2">
+                <span class="text-base">⚽</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-slate-100 truncate">Tottenham vs Aston Villa</div>
+                  <div class="text-[11px] text-slate-500">选 Yes · 30.00 份 · $18.00</div>
+                </div>
+                <span class="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-1.5 py-0 text-[10px] text-emerald-300 shrink-0">●Top</span>
+              </div>
+
+              <div class="rounded-lg bg-slate-800/40 px-2.5 py-2 text-[11px] text-slate-300 flex items-center justify-between">
+                <span>💰 可借最高</span>
+                <span class="font-semibold text-slate-100">$14.40 <span class="text-slate-500 font-normal">· 12% APR</span></span>
+              </div>
+
+              <div class="grid grid-cols-[1fr_auto] gap-2">
+                <button class="rounded-lg bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">借出 USDC</button>
+                <button class="rounded-lg border border-slate-700 hover:bg-slate-800 px-3 py-2 text-xs text-slate-300">AI 分析 ›</button>
+              </div>
+            </div>
+
+            <!-- ⑤ Card · ineligible LEAGUE -->
+            <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-3.5 space-y-2 opacity-80">
+              <div class="flex items-start gap-2">
+                <span class="text-base grayscale">⚽</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm text-slate-300 truncate">Real Madrid vs Barcelona</div>
+                  <div class="text-[11px] text-slate-500">选 Yes · 100 份 · $40.00</div>
+                </div>
+                <span class="rounded-full border border-slate-700 bg-slate-800 px-1.5 py-0 text-[10px] text-slate-500 shrink-0">未支持</span>
+              </div>
+              <div class="rounded-lg bg-slate-800/40 px-2.5 py-1.5 text-[11px] text-slate-400">
+                🔒 La Liga 暂未上线 · 当前支持 Premier League · World Cup
+              </div>
+              <button class="w-full rounded-lg border border-slate-700 hover:bg-slate-800 px-3 py-1.5 text-[11px] text-slate-400">支持后通知我 ›</button>
+            </div>
+
+            <!-- ⑤ Card · NON-FOOTBALL -->
+            <div class="rounded-xl border border-slate-800 bg-slate-900/40 p-3.5 space-y-2 opacity-70">
+              <div class="flex items-start gap-2">
+                <span class="text-base grayscale">🎾</span>
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm text-slate-400 truncate">Tennis · Alcaraz wins ATP Finals</div>
+                  <div class="text-[11px] text-slate-500">选 Yes · 20 份 · $13.50</div>
+                </div>
+                <span class="rounded-full border border-slate-700 bg-slate-800 px-1.5 py-0 text-[10px] text-slate-500 shrink-0">非足球</span>
+              </div>
+              <div class="text-[11px] text-slate-500">🚫 KPAX 当前仅支持足球持仓</div>
+            </div>
+
+            <!-- ⑥ history footer link -->
+            <a href="#" class="block rounded-xl border border-dashed border-slate-700 bg-slate-900/30 p-3 text-center text-xs text-slate-400 hover:bg-slate-800/40">
+              查看借款历史 (3 笔已还款) ›
+            </a>
+
+          </div>
+        </div>
+      </div>
+
+      <aside class="space-y-5 pt-7">
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">1</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">把操作中心从 PM 页搬回侧边栏</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原 IA：用户必须 <i>打开 polymarket.com/event/xxx → 等 KPAX 检测 → 才能在那个特定持仓上借款</i>。
+              一次只能操作一个持仓，要操作另一个持仓必须切换 PM 页。<br><br>
+              新 IA：<b>所有 CTF 持仓在一个页面列出</b>，用户从 Profile 一步直达，
+              不依赖任何 polymarket.com 页面。借款 / 还款是 KPAX 自有产品，
+              不该让用户先去&ldquo;调度&rdquo; PM 页才能用。<br><br>
+              <span class="text-slate-500">数据已经在后端：<code>/lending/positions</code> 已返回所有 CTF 持仓 + 借款资格 + 可借上限。</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">2</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">三联指标 + 4 个筛选 chip</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              <b>总持仓数 / 总价值 / 借款中数</b> 三个数字让用户秒判&ldquo;我现在有多少钱在 PM 上、多少在 KPAX 抵押&rdquo;。
+              筛选 chip 让大持仓量用户能直接定位&ldquo;借款中&rdquo;的卡片，
+              不用滚到底找需要还款的那笔。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">3</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">借款中卡片 = 自带风险监控</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              <b>应还 + LTV chip + 进度条</b> 全在卡片本身，不用进 RepayModal 才知道&ldquo;离强平多远&rdquo;。<br>
+              临近警戒的卡用 amber 边框 + 警告条，和 healthy 卡视觉一秒可分。
+              这是借贷产品的核心功能 — 让风险<b>持续可见</b>而不是埋在子页。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">4</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">可借卡片 — 直接表达&ldquo;现在你能拿多少&rdquo;</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              没借的 CTF 卡，主信息不是&ldquo;持仓详情&rdquo;而是 <b>&ldquo;💰 可借最高 $14.40&rdquo;</b>。
+              KPAX 的产品价值 (USDC) 直接亮在第二行，CTA 一秒可点。
+              league tier 用胶囊角标，让用户知道&ldquo;Top 联赛能借更多&rdquo;的设计。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">5</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">不支持的持仓也<b>一并展示</b>，不是&ldquo;过滤掉&rdquo;</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              非足球 / 联赛未支持 的卡片<b>不应该被隐藏</b> — 否则用户以为 KPAX 漏看了他的某个持仓，反而失去信任。<br>
+              改成低饱和 + 灰度图标 + 明确原因（&ldquo;La Liga 暂未上线&rdquo;、&ldquo;仅支持足球&rdquo;），
+              并对联赛未支持的持仓给一个&ldquo;通知我&rdquo;按钮 —
+              把&ldquo;不能借&rdquo;转化为 <b>增长信号</b>（用户主动告诉你想要哪些联赛）。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">6</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">AI 分析变成可选副 action</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              你的要求 ✓ — 借/还操作完全不需 PM 页。每张卡片右下角的&ldquo;AI 分析 ›&rdquo;是<b>独立入口</b>：
+              点击时再开 polymarket.com 对应比赛页（chrome.tabs.create + 自动检测），
+              或后端 Gamma API 直接出报告（CLAUDE.md 里就有这个偏好）。<br>
+              一次操作 ≠ 一次跳转，让 PM 页的角色从&ldquo;前置依赖&rdquo;退化成&ldquo;深度分析时才打开的资料站&rdquo;。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-emerald-300 bg-emerald-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white text-xs">✓</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">历史折叠到底部链接</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              主页只关心&ldquo;现在&rdquo;的持仓 + 借款 — 已还款的历史压成底部一行链接，
+              用户想看时再点进单独的&ldquo;借款历史&rdquo;页（Tab 5）。
+              避免主页混入&ldquo;过去&rdquo;的视觉噪音。
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+
+    <!-- ============================================================ -->
+    <!-- SCREEN 4 · PROFILE -->
+    <!-- ============================================================ -->
+    <main data-screen="profile" class="max-w-6xl mx-auto px-6 py-8 grid grid-cols-[400px_1fr] gap-10">
+      <div>
+        <div class="text-xs text-slate-500 mb-2">Side Panel · 400 × 880</div>
+        <div class="panel rounded-3xl border border-slate-300 bg-slate-950 text-slate-100 shadow-xl overflow-hidden">
+
+          <div class="flex items-center justify-between border-b border-slate-800 bg-slate-950/95 px-4 py-2">
+            <button class="flex items-center gap-1 text-sm text-slate-400">‹ 返回</button>
+            <span class="text-sm font-semibold">我的</span>
+            <button class="text-slate-500 text-base">↻</button>
+          </div>
+
+          <div class="p-4 space-y-4">
+
+            <section class="rounded-xl border border-slate-800 bg-slate-900/60 p-4">
+              <div class="flex items-center gap-3">
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-700 text-white text-xl font-bold shrink-0">H</div>
+                <div class="min-w-0">
+                  <div class="truncate text-sm font-medium">hellojun0699@gmail.com</div>
+                  <div class="text-xs text-slate-500">已登录 · Google</div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500">钱包</div>
+              <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-4 space-y-4">
+                <div class="flex items-center justify-between text-xs text-slate-500">
+                  <span>Polygon · USDC</span>
+                  <div class="flex items-center gap-2">
+                    <button class="text-slate-400">⧉</button>
+                    <button class="text-slate-400">↗</button>
+                  </div>
+                </div>
+                <div class="break-all rounded-lg bg-slate-800/50 px-3 py-2 text-xs font-mono text-slate-300">0xAbCd…1234EfGh</div>
+                <div class="text-center py-2">
+                  <div class="text-3xl font-bold">$24.30</div>
+                  <div class="mt-1 text-xs text-slate-500">USDC · Polygon</div>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <button class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium">充值</button>
+                  <button class="rounded-lg border border-slate-700 bg-slate-800/40 px-3 py-2 text-sm text-slate-500">提现 (敬请期待)</button>
+                </div>
+              </div>
+            </section>
+
+            <!-- ① NEW: assets entry (replaces old loans-only callout) -->
+            <section>
+              <div class="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500">我的资产</div>
+              <a href="#" class="block rounded-xl border border-blue-500/30 bg-blue-500/5 p-4 hover:bg-blue-500/10 transition-colors">
+                <div class="flex items-center gap-3">
+                  <div class="text-2xl shrink-0">📂</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-baseline gap-2 flex-wrap">
+                      <span class="text-sm font-semibold text-blue-100">5 个持仓</span>
+                      <span class="rounded-full bg-blue-500/20 border border-blue-500/40 px-2 py-0.5 text-[10px] text-blue-200">2 借款中</span>
+                      <span class="rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] text-amber-300">⚠️ 1 临近警戒</span>
+                    </div>
+                    <div class="mt-1 text-xs text-blue-200/80">总价值 <span class="font-semibold text-blue-100">$120.50</span> · 应还 $10.42</div>
+                  </div>
+                  <span class="text-blue-300 text-base">›</span>
+                </div>
+              </a>
+            </section>
+
+            <section>
+              <div class="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500">产品</div>
+              <div class="rounded-xl border border-slate-800 bg-slate-900/60 divide-y divide-slate-800">
+                <button class="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-800/40">
+                  <div class="text-2xl shrink-0">💰</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="text-sm font-medium">借贷</span>
+                      <span class="rounded-full bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0 text-[9px] text-emerald-300">已开通</span>
+                    </div>
+                    <div class="text-xs text-slate-500 truncate">用 Polymarket 持仓做抵押借 USDC</div>
+                  </div>
+                  <span class="text-slate-500 text-base">›</span>
+                </button>
+                <div class="flex items-center gap-3 px-4 py-3">
+                  <div class="text-2xl shrink-0 grayscale opacity-60">🛡️</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium text-slate-400">仓位保险</div>
+                    <div class="text-xs text-slate-600 truncate">为持仓买强平/作弊风险保险</div>
+                  </div>
+                  <span class="text-[10px] rounded-full bg-slate-800 px-2 py-0.5 text-slate-500">敬请期待</span>
+                </div>
+                <div class="flex items-center gap-3 px-4 py-3">
+                  <div class="text-2xl shrink-0 grayscale opacity-60">📈</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm font-medium text-slate-400">杠杆</div>
+                    <div class="text-xs text-slate-600 truncate">5x 杠杆做多 / 做空赔率</div>
+                  </div>
+                  <span class="text-[10px] rounded-full bg-slate-800 px-2 py-0.5 text-slate-500">敬请期待</span>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-slate-500">设置</div>
+              <div class="rounded-xl border border-slate-800 bg-slate-900/60 divide-y divide-slate-800 text-sm">
+                <div class="flex items-center justify-between px-4 py-3">
+                  <span>主题</span>
+                  <span class="text-xs text-slate-500">跟随系统</span>
+                </div>
+                <div class="flex items-center justify-between px-4 py-3">
+                  <span>导出私钥</span>
+                  <span class="text-xs text-slate-500">敬请期待</span>
+                </div>
+                <button class="w-full px-4 py-3 text-left text-red-400 hover:bg-red-500/5">退出登录</button>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+      <aside class="space-y-5 pt-7">
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">1</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">入口直接进 &ldquo;我的资产&rdquo;</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版借贷只能从 <i>Products → 借贷 → LendingPage</i> 三层下钻 + 历史列表。
+              改为 Profile 一键直达<b>资产页</b>（Tab 3）— 那里所有 CTF 持仓 + 借款状态都在一屏。<br><br>
+              callout 包含三组信号：<b>5 持仓数 / 2 借款中 / 1 临近警戒</b>。
+              如果没有警戒 chip 就不显示，确保&ldquo;紧急的事&rdquo;才有红/琥珀视觉打断。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">2</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">给已激活的产品打&ldquo;已开通&rdquo;角标</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              原版 ProductRow 只区分有/没有 onClick，但不告知&ldquo;借贷&rdquo;是已激活还是&ldquo;coming soon&rdquo;。
+              点进去之前都不知道这个产品到底能不能用。emerald &ldquo;已开通&rdquo; vs slate &ldquo;敬请期待&rdquo; 区分清楚。
+              灰度滤镜让 coming-soon 图标视觉降级，引导眼睛聚焦到能用的那个。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-emerald-300 bg-emerald-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-500 text-white text-xs">✓</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">保留的好东西</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              钱包卡片（地址 + $24.30 大数字 + 充值按钮）原本就做得不错，结构不动。
+              整页延续 slate-900 卡片 + slate-800 分割线 + 大写小标题的视觉系统。
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+
+    <!-- ============================================================ -->
+    <!-- SCREEN 5 · LOAN HISTORY (slimmed — active loans now live on asset cards) -->
+    <!-- ============================================================ -->
+    <main data-screen="lending" class="max-w-6xl mx-auto px-6 py-8 grid grid-cols-[400px_1fr] gap-10">
+      <div>
+        <div class="text-xs text-slate-500 mb-2">Side Panel · 400 × 720</div>
+        <div class="panel rounded-3xl border border-slate-300 bg-slate-950 text-slate-100 shadow-xl overflow-hidden">
+
+          <div class="flex items-center justify-between border-b border-slate-800 bg-slate-950/95 px-4 py-2">
+            <button class="flex items-center gap-1 text-sm text-slate-400">‹ 返回</button>
+            <span class="text-sm font-semibold">借款历史</span>
+            <button class="text-slate-500 text-base">↻</button>
+          </div>
+
+          <div class="p-4 space-y-4">
+
+            <!-- ① Lifetime stats -->
+            <section>
+              <div class="grid grid-cols-3 gap-2">
+                <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+                  <div class="text-xl font-bold tabular-nums">3</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">已还笔数</div>
+                </div>
+                <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+                  <div class="text-xl font-bold tabular-nums">$13.00</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">累计借出</div>
+                </div>
+                <div class="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-center">
+                  <div class="text-xl font-bold tabular-nums">$0.0732</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">累计利息</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- ② "see active in 资产" pointer -->
+            <a href="#" class="block rounded-xl border border-blue-500/30 bg-blue-500/5 p-3 hover:bg-blue-500/10 transition-colors">
+              <div class="flex items-center gap-2">
+                <span class="text-base">📂</span>
+                <div class="flex-1 text-xs text-blue-200">
+                  当前 <span class="font-semibold text-blue-100">2 笔活跃借款</span> 在 &ldquo;我的资产&rdquo; 中管理
+                </div>
+                <span class="text-blue-300 text-base">›</span>
+              </div>
+            </a>
+
+            <!-- ③ filter -->
+            <div class="flex flex-wrap gap-1.5 text-[11px]">
+              <button class="rounded-full bg-blue-600 text-white px-2.5 py-1 font-medium">全部 3</button>
+              <button class="rounded-full border border-slate-700 px-2.5 py-1 text-slate-300">已还 3</button>
+              <button class="rounded-full border border-slate-700 px-2.5 py-1 text-slate-300">已强平 0</button>
+            </div>
+
+            <!-- ④ history list -->
+            <div class="space-y-2">
+              <div class="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 text-[10px] text-emerald-200">已还</span>
+                    <span class="text-xs text-slate-300 truncate">Tottenham vs Newcastle</span>
+                  </div>
+                  <span class="text-[10px] text-slate-500">#38</span>
+                </div>
+                <div class="text-[11px] text-slate-400">本金 $3.00 · 实付利息 $0.0287 · 持仓 14 天</div>
+                <div class="mt-1.5 flex gap-3 text-[10px]">
+                  <a class="text-slate-500 hover:text-slate-300" href="#">↗ 开仓</a>
+                  <a class="text-slate-500 hover:text-slate-300" href="#">↗ 还款</a>
+                </div>
+              </div>
+              <div class="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 text-[10px] text-emerald-200">已还</span>
+                    <span class="text-xs text-slate-300 truncate">Brighton vs West Ham</span>
+                  </div>
+                  <span class="text-[10px] text-slate-500">#35</span>
+                </div>
+                <div class="text-[11px] text-slate-400">本金 $5.00 · 实付利息 $0.0204 · 持仓 8 天</div>
+              </div>
+              <div class="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <span class="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 text-[10px] text-emerald-200">已还</span>
+                    <span class="text-xs text-slate-300 truncate">Man Utd vs Wolves</span>
+                  </div>
+                  <span class="text-[10px] text-slate-500">#28</span>
+                </div>
+                <div class="text-[11px] text-slate-400">本金 $5.00 · 实付利息 $0.0241 · 持仓 9 天</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <aside class="space-y-5 pt-7">
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">1</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">这一页只剩&ldquo;历史&rdquo;</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              活跃借款已经迁到资产页（Tab 3），每张 CTF 卡片自带应还/LTV/还款 CTA。
+              这一页就退化成<b>纯查询页</b>：累计借了多少、付了多少利息、过去开过哪些仓。
+              页内显示一条蓝色 callout 提醒用户&ldquo;活跃借款在 我的资产 里管&rdquo;，避免找不到。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">2</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">Lifetime 三联：已还 / 累计借出 / 累计利息</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              历史页该回答的问题是&ldquo;我用 KPAX 多久了、花了多少钱&rdquo;。
+              &ldquo;累计利息 $0.0732&rdquo; 这种数字对用户判断<b>是不是真的便宜</b>很有用，
+              比&ldquo;笔数 / 健康度&rdquo;在历史语境里更合适。
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 flex gap-3">
+          <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white text-xs font-bold">3</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold text-slate-900 mb-1">筛选 chip 把&ldquo;已强平&rdquo;独立一类</div>
+            <div class="text-xs text-slate-700 leading-relaxed">
+              现在的实现把 &ldquo;repaid / liquidated_ltv / liquidated_kickoff&rdquo; 都堆在一起，
+              用户分不清&ldquo;我有几次被强平过&rdquo;。
+              单独一个 chip&ldquo;已强平&rdquo;，让用户能审视自己的风控历史。
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+
+    <!-- ============================================================ -->
+    <!-- COMPARE -->
+    <!-- ============================================================ -->
+    <main data-screen="compare" class="max-w-5xl mx-auto px-6 py-8 space-y-8">
+
+      <!-- IA decoupling diagram -->
+      <section class="space-y-4">
+        <h2 class="text-lg font-bold">IA 改动 · 解耦借贷与 Polymarket 页</h2>
+        <p class="text-sm text-slate-600">
+          原架构：借贷功能<b>挂在 PM 比赛页上</b> — 用户必须先打开比赛才能借款。
+          新架构：借贷是 KPAX 自有产品 — 资产页是入口，只有 AI 分析需要 PM 上下文。
+        </p>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- OLD -->
+          <div class="rounded-xl border-2 border-red-300 bg-white p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="rounded-full bg-red-100 text-red-700 px-2 py-0.5 text-[11px] font-semibold">原架构</span>
+              <span class="text-sm font-semibold">PM 页是入口</span>
+            </div>
+            <div class="font-mono text-xs leading-relaxed text-slate-700 whitespace-pre">用户登录 KPAX
+   ↓
+打开 Profile → 借贷
+   ↓
+LendingPage (只能看历史)
+   ↓
+要借款？回去 Polymarket
+   ↓
+找到一场比赛 → 进入
+   ↓
+等 KPAX 检测页面
+   ↓
+BorrowEntry 才出现
+   ↓
+点&ldquo;借款&rdquo;</div>
+            <div class="mt-3 rounded-lg bg-red-50 border border-red-200 p-2 text-[11px] text-red-700">
+              问题：要操作另一个持仓，必须再切一次 PM tab。<br>
+              一次只能管一个持仓 → 多笔借款用户体验崩塌。
+            </div>
+          </div>
+
+          <!-- NEW -->
+          <div class="rounded-xl border-2 border-emerald-300 bg-white p-5">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5 text-[11px] font-semibold">新架构</span>
+              <span class="text-sm font-semibold">资产页是入口</span>
+            </div>
+            <div class="font-mono text-xs leading-relaxed text-slate-700 whitespace-pre">用户登录 KPAX
+   ↓
+Profile → 我的资产
+   ↓
+所有 CTF 持仓一屏列出
+   ├ 借款中 (有 LTV 监控)
+   ├ 可借 (一键借)
+   └ 不支持 (告知原因)
+   ↓
+任意卡片点 [借款 / 还款]
+   ↓
+完成 — 全程不需 PM tab
+
+⚙️ AI 分析 (副 action) → 才打开 PM 页</div>
+            <div class="mt-3 rounded-lg bg-emerald-50 border border-emerald-200 p-2 text-[11px] text-emerald-800">
+              价值：批量管理 ✓ · 风险持续可见 ✓ · PM 仅为 AI 分析服务 ✓
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+          <div class="font-semibold mb-1">📌 PM 页保留什么</div>
+          <ul class="list-disc list-inside space-y-1 text-[13px] leading-relaxed">
+            <li><b>原 KPAX 核心功能</b> — 检测足球市场 + 弹出 AI 辩论分析。这部分功能保留不变。</li>
+            <li><b>快捷借款入口</b>（可选）— 在 PM 比赛页底部仍可显示&ldquo;在该持仓上借款&rdquo;的快捷卡，但<b>不再是主入口</b>，只是一种 shortcut。</li>
+            <li><b>AI 分析的上下文</b> — 资产页&ldquo;AI 分析 ›&rdquo;按钮 chrome.tabs.create 打开对应 PM 页，让用户看到完整市场状态。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Change list -->
+      <section class="space-y-3">
+        <h2 class="text-lg font-bold">改动清单 · 按工程量排序</h2>
+        <p class="text-sm text-slate-600">
+          实现顺序建议：先做前 4 行的&ldquo;借/还款流程优化&rdquo;（你已 OK），再做资产页（最大改动 + 最大价值）。
+        </p>
+
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-slate-200 text-left">
+              <th class="px-3 py-2 border border-slate-300">改动</th>
+              <th class="px-3 py-2 border border-slate-300 w-24">价值</th>
+              <th class="px-3 py-2 border border-slate-300 w-28">工程量</th>
+              <th class="px-3 py-2 border border-slate-300 w-72">涉及文件</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white">
+            <tr class="bg-slate-50">
+              <td colspan="4" class="px-3 py-1.5 border border-slate-300 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Phase 1 · 借/还款流程优化（已 OK）</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">主按钮文案去掉&ldquo;MM 弹两次&rdquo;描述</td>
+              <td class="px-3 py-2 border border-slate-300 text-emerald-700">高</td>
+              <td class="px-3 py-2 border border-slate-300">~30 分钟</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">BorrowFlowDialog.tsx<br>RepayModal.tsx</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">RiskCard 默认展开 + 三块指标卡</td>
+              <td class="px-3 py-2 border border-slate-300 text-emerald-700">高</td>
+              <td class="px-3 py-2 border border-slate-300">~1 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">BorrowFlowDialog.tsx<br>需后端给 liquidation_price</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">滑块下方加 4 段刻度 + 当前 LTV chip</td>
+              <td class="px-3 py-2 border border-slate-300 text-emerald-700">高</td>
+              <td class="px-3 py-2 border border-slate-300">~1 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">BorrowFlowDialog.tsx</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">APR + 日利息 grid → &ldquo;借/还&rdquo;等式卡</td>
+              <td class="px-3 py-2 border border-slate-300 text-emerald-700">高</td>
+              <td class="px-3 py-2 border border-slate-300">~30 分钟</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">BorrowFlowDialog.tsx</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">提取 Stepper 组件，借/还款流程都用</td>
+              <td class="px-3 py-2 border border-slate-300 text-amber-700">中</td>
+              <td class="px-3 py-2 border border-slate-300">~2 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">新增 components/Stepper.tsx</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">把&ldquo;LoanOpened/LoanRepaid&rdquo;等合约术语从用户文案中清掉</td>
+              <td class="px-3 py-2 border border-slate-300 text-amber-700">中</td>
+              <td class="px-3 py-2 border border-slate-300">~30 分钟</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">BorrowFlowDialog.tsx<br>RepayModal.tsx</td>
+            </tr>
+
+            <tr class="bg-blue-50">
+              <td colspan="4" class="px-3 py-1.5 border border-slate-300 text-[11px] font-semibold uppercase tracking-wider text-blue-700">Phase 2 · 资产页 + IA 解耦（★ 最大价值）</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">新增资产页骨架：路由 + Profile 入口替换</td>
+              <td class="px-3 py-2 border border-slate-300 text-emerald-700">高</td>
+              <td class="px-3 py-2 border border-slate-300">~2 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">新增 sidepanel/components/AssetsPage.tsx<br>Profile.tsx (替换借贷 callout)</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">AssetCard 组件 — 4 种状态分支</td>
+              <td class="px-3 py-2 border border-slate-300 text-emerald-700">高</td>
+              <td class="px-3 py-2 border border-slate-300">~3 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">新增 AssetCard.tsx<br>复用 BorrowFlowDialog / RepayModal</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">概览三联 + 筛选 chip 状态机</td>
+              <td class="px-3 py-2 border border-slate-300 text-amber-700">中</td>
+              <td class="px-3 py-2 border border-slate-300">~1 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">AssetsPage.tsx</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">后端 /lending/positions 增加非足球 / 联赛未支持的资产 + 原因码</td>
+              <td class="px-3 py-2 border border-slate-300 text-amber-700">中</td>
+              <td class="px-3 py-2 border border-slate-300">~2 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">backend/app/routers/lending.py<br>需新字段 ineligible_reason: enum</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">解耦 BorrowEntry — 不再监听 PM 页 detect，改为资产页直接调用</td>
+              <td class="px-3 py-2 border border-slate-300 text-emerald-700">高</td>
+              <td class="px-3 py-2 border border-slate-300">~2 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">BorrowEntry.tsx 拆分为<br>① BorrowEntryFromPM (旧)<br>② BorrowEntryFromAssets (新)</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">&ldquo;AI 分析&rdquo;按钮 — chrome.tabs.create 跳到对应 PM 页</td>
+              <td class="px-3 py-2 border border-slate-300 text-amber-700">中</td>
+              <td class="px-3 py-2 border border-slate-300">~30 分钟</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">AssetCard.tsx<br>已有 event_slug, 可拼出 URL</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">借款历史页瘦身：移除活跃借款 + 开始借款入口</td>
+              <td class="px-3 py-2 border border-slate-300 text-amber-700">中</td>
+              <td class="px-3 py-2 border border-slate-300">~1 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">Profile.tsx 的 LendingPage<br>LendingHistory.tsx</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 border border-slate-300">&ldquo;支持后通知我&rdquo;按钮 — 后端记录用户对联赛的需求</td>
+              <td class="px-3 py-2 border border-slate-300 text-slate-500">低</td>
+              <td class="px-3 py-2 border border-slate-300">~2 小时</td>
+              <td class="px-3 py-2 border border-slate-300 text-xs">新 endpoint /lending/league-interest<br>是增长信号入口</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div class="rounded-xl border border-slate-300 bg-white p-4">
+            <div class="font-semibold mb-1">Phase 1 工时</div>
+            <div class="text-slate-600">~6 小时 / 4-5 个 PR — 1-2 天上线，是借/还款流程的微创手术。</div>
+          </div>
+          <div class="rounded-xl border border-blue-300 bg-blue-50 p-4">
+            <div class="font-semibold mb-1 text-blue-800">Phase 2 工时</div>
+            <div class="text-blue-900">~14 小时 / 4-5 个 PR — 是产品形态的升级。建议作为下一个 sprint。</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+
+    <script>
+      // tab switching — replace dataset.tab with screen, no innerHTML
+      document.querySelectorAll(".tab-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var target = btn.getAttribute("data-tab");
+          document.querySelectorAll(".tab-btn").forEach(function (b) {
+            b.setAttribute("data-active", "false");
+          });
+          btn.setAttribute("data-active", "true");
+          document.querySelectorAll("[data-screen]").forEach(function (m) {
+            m.classList.toggle("active", m.getAttribute("data-screen") === target);
+          });
+          window.scrollTo({ top: 0, behavior: "instant" });
+        });
+      });
+    </script>
+  </body>
+</html>
